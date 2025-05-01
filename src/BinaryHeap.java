@@ -4,7 +4,9 @@ import java.util.OptionalInt;
 // src: https://en.wikipedia.org/wiki/Binary_heap
 public class BinaryHeap {
     private int[] heap;
-    private int lastIndex = 0;
+    // index of last element = validLength - 1
+    // length of the valid portion of the heap
+    private int validLength = 0;
 
     public BinaryHeap(int[] input) {
         // input is an arbitrary array of ints, ie not sorted, no heap property
@@ -15,18 +17,43 @@ public class BinaryHeap {
     }
 
     public void insert(int x) {
-        if (lastIndex > heap.length) {
+        if (validLength > heap.length) {
             heap = Arrays.copyOf(heap, heap.length*2);
         }
 
-        heap[lastIndex] = x;
+        heap[validLength] = x;
 
-        int index = lastIndex;
+        int index = validLength;
         while(parentIndexOf(index).isPresent() && heapPropertyViolated(index)) {
             swapAtIndexes(parentIndexOf(index).getAsInt(), index);
             index = parentIndexOf(index).getAsInt();
         }
-        lastIndex++;
+        validLength++;
+    }
+
+    public OptionalInt extract() {
+        if(validLength == 0)
+            return OptionalInt.empty();
+
+        var top = heap[0];
+        swapAtIndexes(0, validLength-1);
+        validLength--;
+
+        int index = 0;
+        while(heapPropertyViolated(index)) {
+            int largestIndex = index;
+            if (leftChildIndexOf(index).isPresent() && heap[leftChildIndexOf(index).getAsInt()] > heap[largestIndex])
+                largestIndex = leftChildIndexOf(index).getAsInt();
+
+            if (rightChildIndexOf(index).isPresent() && heap[rightChildIndexOf(index).getAsInt()] > heap[largestIndex])
+                largestIndex = rightChildIndexOf(index).getAsInt();
+
+            if (largestIndex != index)
+                swapAtIndexes(largestIndex, index);
+            index = largestIndex;
+        }
+
+        return OptionalInt.of(top);
     }
 
     public int[] getAsArray() {
@@ -68,7 +95,7 @@ public class BinaryHeap {
     private OptionalInt leftChildIndexOf(int index) {
         var childIndex = 2*index + 1;
 
-        if (childIndex < heap.length)
+        if (childIndex < validLength)
             return OptionalInt.of(childIndex);
         else
             return OptionalInt.empty();
@@ -77,7 +104,7 @@ public class BinaryHeap {
     private OptionalInt rightChildIndexOf(int index) {
         var childIndex = 2*index + 2;
 
-        if (childIndex < heap.length)
+        if (childIndex < validLength)
             return OptionalInt.of(childIndex);
         else
             return OptionalInt.empty();
