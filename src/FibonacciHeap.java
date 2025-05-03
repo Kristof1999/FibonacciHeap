@@ -8,13 +8,15 @@ import java.util.OptionalInt;
 //   Optimization Algorithms
 public class FibonacciHeap {
     private Optional<Item> minItem = Optional.empty();
+    private CircularDoublyLinkedList roots;
 
     public FibonacciHeap(int[] items) {
         if (items.length == 0)
             return;
 
+        roots = new CircularDoublyLinkedList();
         for (var item : items) {
-            insert(item);
+            insert(item, roots);
         }
     }
 
@@ -25,7 +27,7 @@ public class FibonacciHeap {
             return OptionalInt.of(minItem.get().value);
     }
 
-    public void insert(int itemValue) {
+    public void insert(int itemValue, CircularDoublyLinkedList tree) {
         var item = new Item();
         item.value = itemValue;
         if (minItem.isEmpty()) {
@@ -33,13 +35,10 @@ public class FibonacciHeap {
             return;
         }
 
-        item.right = minItem.get().right;
-        item.left = minItem.get();
-        minItem.get().right.left = item;
-        minItem.get().right = item;
-
         if(minItem.get().value > item.value) {
             minItem = Optional.of(item);
         }
+
+        tree.insertAtEnd(item);
     }
 }
