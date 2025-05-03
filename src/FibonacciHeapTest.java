@@ -24,4 +24,19 @@ class FibonacciHeapTest {
         var heap = new FibonacciHeap(new int[0]);
         assertEquals(OptionalInt.empty(), heap.getMin());
     }
+
+    @Test
+    public void extractMinTest() {
+        var heap = new FibonacciHeap(input);
+        assertEquals(1, heap.extractMin().getAsInt());
+        assertEquals(2, heap.extractMin().getAsInt());
+        assertEquals(3, heap.extractMin().getAsInt());
+        assertEquals(7, heap.extractMin().getAsInt());
+        assertEquals(17, heap.extractMin().getAsInt());
+        assertEquals(19, heap.extractMin().getAsInt());
+        assertEquals(25, heap.extractMin().getAsInt());
+        assertEquals(36, heap.extractMin().getAsInt());
+        assertEquals(100, heap.extractMin().getAsInt());
+        assertEquals(OptionalInt.empty(), heap.extractMin().getAsInt());
+    }
 }

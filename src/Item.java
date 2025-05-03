@@ -4,14 +4,23 @@ public class Item {
     public Optional<CircularDoublyLinkedList> child = Optional.empty();
     public Item left = this;
     public Item right = this;
-    public int value, rank;
+    public int value;
     public boolean marked;
 
-    public void setChild(Item child) {
-        if (this.child.isEmpty()) {
-            this.child = Optional.of(new CircularDoublyLinkedList());
+    public void addToChildren(Item item) {
+        if (child.isEmpty()) {
+            child = Optional.of(new CircularDoublyLinkedList());
+        }
+
+        child.get().insertAtEnd(item);
+        child.get().setParent(this);
+    }
+
+    public int getRank() {
+        if (child.isEmpty()) {
+            return 0;
         } else {
-            this.child.get().insertAtEnd(child);
+            return child.get().size;
         }
     }
 }
