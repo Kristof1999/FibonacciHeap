@@ -92,4 +92,46 @@ class CircularDoublyLinkedListTest {
         assertEquals(Optional.empty(), list.first);
         assertEquals(Optional.empty(), list.first);
     }
+
+    @Test
+    public void concatenateEmptyWithEmpty() {
+        var list1 = new CircularDoublyLinkedList();
+        var list2 = new CircularDoublyLinkedList();
+        list1.concatenate(list2);
+        assertEquals(0, list1.size);
+    }
+
+    @Test
+    public void concatenateNonEmptyWithEmpty() {
+        var list1 = new CircularDoublyLinkedList();
+        list1.insertAtEnd(item1);
+        var list2 = new CircularDoublyLinkedList();
+        list1.concatenate(list2);
+        assertEquals(1, list1.size);
+        assertEquals(item1.value, list1.first.get().value);
+        assertEquals(item1.value, list1.last.get().value);
+    }
+
+    @Test
+    public void concatenateEmptyWithNonEmpty() {
+        var list1 = new CircularDoublyLinkedList();
+        var list2 = new CircularDoublyLinkedList();
+        list2.insertAtEnd(item1);
+        list1.concatenate(list2);
+        assertEquals(1, list1.size);
+        assertEquals(item1.value, list1.first.get().value);
+        assertEquals(item1.value, list1.last.get().value);
+    }
+
+    @Test
+    public void concatenateNonEmptyWithNonEmpty() {
+        var list1 = new CircularDoublyLinkedList();
+        list1.insertAtEnd(item1);
+        var list2 = new CircularDoublyLinkedList();
+        list2.insertAtEnd(item2);
+        list1.concatenate(list2);
+        assertEquals(2, list1.size);
+        assertEquals(item1.value, list1.first.get().value);
+        assertEquals(item2.value, list1.last.get().value);
+    }
 }

@@ -46,11 +46,21 @@ public class CircularDoublyLinkedList {
     }
 
     public void concatenate(CircularDoublyLinkedList other) {
-        first.get().left = other.last.get();
-        other.last.get().right = first.get();
-        last.get().right = other.first.get();
-        other.first.get().left = last.get();
-        size += other.size;
+        if (first.isEmpty()) {
+            first = other.first;
+            last = other.last;
+            size = other.size;
+        } else {
+            if (other.first.isEmpty())
+                return;
+
+            first.get().left = other.last.get();
+            other.last.get().right = first.get();
+            last.get().right = other.first.get();
+            other.first.get().left = last.get();
+            last = other.last;
+            size += other.size;
+        }
     }
 
     public void setParent(Item parent) {
