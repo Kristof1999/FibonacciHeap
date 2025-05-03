@@ -1,10 +1,12 @@
 import java.util.Optional;
 
+// src: https://en.wikipedia.org/wiki/Doubly_linked_list
 public class CircularDoublyLinkedList {
-    private Optional<Item> first = Optional.empty();
-    private Optional<Item> last = Optional.empty();
+    // invariant: first and last both must be empty or non-empty
+    public Optional<Item> first = Optional.empty();
+    public Optional<Item> last = Optional.empty();
     public Optional<Item> parent = Optional.empty();
-
+    public int size = 0;
 
     public void insertAtEnd(Item item) {
         if (first.isPresent()) {
@@ -17,6 +19,30 @@ public class CircularDoublyLinkedList {
             first = Optional.of(item);
             last = Optional.of(item);
         }
+        size++;
+    }
+
+    public void delete(Item item) {
+        if (first.isEmpty())
+            throw new IllegalStateException("Deleting from empty list!");
+
+        if (first.get().value == item.value)
+            first = Optional.of(first.get().right);
+
+        if (last.get().value == item.value)
+            last = Optional.of(last.get().left);
+
+        // assumption: no duplicates
+        if (first.get().value == item.value && last.get().value == item.value) {
+            first = Optional.empty();
+            last = Optional.empty();
+        } else {
+            item.left.right = item.right;
+            item.right.left = item.left;
+            item.left = item;
+            item.right = item;
+        }
+        size--;
     }
 
     public void concatenate(CircularDoublyLinkedList other) {
@@ -24,6 +50,7 @@ public class CircularDoublyLinkedList {
         other.last.get().right = first.get();
         last.get().right = other.first.get();
         other.first.get().left = last.get();
+        size += other.size;
     }
 
     public void setParent(Item parent) {
