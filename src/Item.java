@@ -10,10 +10,10 @@ public class Item {
     public void addToChildren(Item item) {
         if (child.isEmpty()) {
             child = Optional.of(new CircularDoublyLinkedList());
+            child.get().setParent(this);
         }
 
         child.get().insertAtEnd(item);
-        child.get().setParent(this);
     }
 
     public int getRank() {
@@ -21,6 +21,15 @@ public class Item {
             return 0;
         } else {
             return child.get().size;
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (child.isPresent()) {
+            return value + " - " + child.get().toString();
+        } else {
+            return value + "";
         }
     }
 }

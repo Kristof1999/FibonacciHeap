@@ -134,4 +134,13 @@ class CircularDoublyLinkedListTest {
         assertEquals(item1.value, list1.first.get().value);
         assertEquals(item2.value, list1.last.get().value);
     }
+
+    @Test
+    public void toString3Level() {
+        var list = new CircularDoublyLinkedList();
+        item1.addToChildren(item2);
+        item2.addToChildren(item3);
+        list.insertAtEnd(item1);
+        assertEquals("(1 - (2 - (3)))", list.toString());
+    }
 }

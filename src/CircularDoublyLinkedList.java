@@ -66,4 +66,22 @@ public class CircularDoublyLinkedList {
     public void setParent(Item parent) {
         this.parent = Optional.of(parent);
     }
+
+    @Override
+    public String toString() {
+        if (first.isEmpty()) {
+            return "()";
+        } else {
+            var sb = new StringBuilder();
+            sb.append("(");
+            var item = first.get();
+            while (item.value != last.get().value) {
+                sb.append(item.toString() + ", ");
+                item = item.right;
+            }
+            sb.append(last.get().toString());
+            sb.append(")");
+            return sb.toString();
+        }
+    }
 }
