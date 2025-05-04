@@ -37,6 +37,6 @@ class FibonacciHeapTest {
         assertEquals(25, heap.extractMin().getAsInt());
         assertEquals(36, heap.extractMin().getAsInt());
         assertEquals(100, heap.extractMin().getAsInt());
-        assertEquals(OptionalInt.empty(), heap.extractMin().getAsInt());
+        assertEquals(OptionalInt.empty(), heap.extractMin());
     }
 }

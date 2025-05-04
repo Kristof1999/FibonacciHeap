@@ -8,6 +8,9 @@ public class Item {
     public boolean marked;
 
     public void addToChildren(Item item) {
+        if (value == item.value)
+            throw new IllegalArgumentException("Cannot add item X as child to item X.");
+
         if (child.isEmpty()) {
             child = Optional.of(new CircularDoublyLinkedList());
             child.get().setParent(this);

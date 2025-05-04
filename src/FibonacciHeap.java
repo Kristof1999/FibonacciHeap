@@ -8,12 +8,14 @@ import java.util.OptionalInt;
 public class FibonacciHeap {
     private Optional<Item> minItem = Optional.empty();
     private CircularDoublyLinkedList roots;
+    private int maxRank;
 
     public FibonacciHeap(int[] items) {
         if (items.length == 0)
             return;
 
         roots = new CircularDoublyLinkedList();
+        maxRank = 0;
         for (var item : items) {
             insert(item);
         }
@@ -40,6 +42,7 @@ public class FibonacciHeap {
         }
 
         roots.insertAtEnd(item);
+        maxRank++;
     }
 
     public OptionalInt extractMin() {
@@ -52,9 +55,15 @@ public class FibonacciHeap {
         if (minItem.get().child.isPresent())
             roots.concatenate(minItem.get().child.get());
 
+        if (roots.first.isEmpty()){
+            // extracting last item!
+            minItem = Optional.empty();
+            return OptionalInt.of(minValue);
+        }
+
         // size could be less...
         // given a rank x as index, it points to a root which has rank x
-        Optional<Item>[] rankPointers = new Optional[roots.size];
+        Optional<Item>[] rankPointers = new Optional[maxRank];
         for (var i = 0; i < rankPointers.length; i++) {
             rankPointers[i] = Optional.empty();
         }
@@ -62,7 +71,7 @@ public class FibonacciHeap {
         var item = roots.first.get();
         minItem = Optional.of(item);
         // assumption: no duplicates
-        while(item.value != roots.last.get().value) {
+        do {
             if(rankPointers[item.getRank()].isEmpty()) {
                 rankPointers[item.getRank()] = Optional.of(item);
             } else {
@@ -76,12 +85,13 @@ public class FibonacciHeap {
                         roots.delete(item1);
                         item2.addToChildren(item1);
                         item = item2;
-                    } else {
+                        newRank++;
+                    } else if (item1.value < item2.value) {
                         roots.delete(item2);
                         item1.addToChildren(item2);
                         item = item1;
+                        newRank++;
                     }
-                    newRank++;
                 }
                 rankPointers[newRank] = Optional.of(item);
             }
@@ -91,7 +101,7 @@ public class FibonacciHeap {
             }
 
             item = item.right;
-        }
+        } while(item.value != roots.first.get().value);
 
         return OptionalInt.of(minValue);
     }
